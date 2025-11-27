@@ -1,0 +1,105 @@
+server:
+  port: 9000
+  forward-headers-strategy: framework
+  compression:
+    enabled: true
+    mime-types:
+      - application/json
+      - application/xml
+      - text/html
+      - text/xml
+      - text/plain
+    min-response-size: 1024
+
+spring:
+  application:
+    name: TCMP - Training and Certificate Management Portal API
+  mvc:
+    dispatch-options-request: true
+  main:
+    allow-circular-references: true
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST}
+      port: ${SPRING_REDIS_PORT}
+      username: ${SPRING_REDIS_USERNAME}
+      password: ${SPRING_REDIS_PASSWORD}
+      repositories:
+        enabled: false
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 1000
+          time_zone: UTC+1
+        order_inserts: true
+        order_updates: true
+        format_sql: false
+    show-sql: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration/default
+    baselineOnMigrate: true
+    placeholderReplacement: false
+  threads:
+    virtual:
+      enabled: true
+  docker:
+    compose:
+      enabled: false
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    tagsSorter: alpha
+    docExpansion: none
+
+management:
+  endpoints:
+    prometheus:
+      enabled: true
+    web:
+      exposure:
+        include: health,info,prometheus
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+application:
+  server:
+    apiUrl: ${API_SERVER_URL}
+    publicAppUrl: ${PUBLIC_APP_SERVER_URL}
+    privateAppUrl: ${PRIVATE_APP_SERVER_URL}
+  cors:
+    liveOrigins: ${LIVE_ORIGINS}
+    devOrigins: ${DEV_ORIGINS}
+  jwt:
+    access:
+      secret: ${JWT_ACCESS_SECRET}
+      expiration: ${JWT_ACCESS_EXPIRATION}
+    refresh:
+      expiration: ${JWT_REFRESH_EXPIRATION}
+  storage:
+    path: ${STORAGE_PATH}
