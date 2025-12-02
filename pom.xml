@@ -17,9 +17,11 @@
     <name>TCMP API</name>
     <description>TCMP - Training and Certificate Management Portal API</description>
     <modules>
+        <module>user-management</module>
         <module>service-gateway</module>
         <module>core</module>
         <module>integration-tests</module>
+        <module>notification-management</module>
     </modules>
 
     <properties>

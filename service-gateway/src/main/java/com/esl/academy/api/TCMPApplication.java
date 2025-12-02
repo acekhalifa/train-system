@@ -27,9 +27,9 @@ import java.util.TimeZone;
 @EnableCaching
 @EnableScheduling
 @EnableConfigurationProperties
-@EnableJpaRepositories("com.esl.academy.2025.api")
-@EntityScan(basePackages = "com.esl.academy.2025.api")
-@SpringBootApplication(scanBasePackages = "com.esl.academy.2025.api")
+@EnableJpaRepositories("com.esl.academy.api")
+@EntityScan(basePackages = "com.esl.academy.api")
+@SpringBootApplication(scanBasePackages = "com.esl.academy.api")
 public class TCMPApplication {
 
 	public static void main(String[] args) {

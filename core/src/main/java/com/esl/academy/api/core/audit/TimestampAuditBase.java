@@ -19,16 +19,16 @@ public class TimestampAuditBase {
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "date_created", updatable = false, columnDefinition = "timestamp with time zone")
-    private OffsetDateTime dateCreated;
+    @Column(name = "created_at", updatable = false, columnDefinition = "timestamp with time zone")
+    private OffsetDateTime createdAt;
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "date_modified", insertable  = false, columnDefinition = "timestamp with time zone")
-    private OffsetDateTime dateModified;
+    @Column(name = "updated_at", insertable  = false, columnDefinition = "timestamp with time zone")
+    private OffsetDateTime updatedAt;
 
     @PreUpdate
     public void preUpdate() {
-        this.dateModified = OffsetDateTime.now(ZoneId.of("Africa/Lagos"));
+        this.updatedAt = OffsetDateTime.now(ZoneId.of("Africa/Lagos"));
     }
 }

@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedBy;
@@ -16,6 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
+@SuperBuilder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,8 +27,8 @@ public class AuditBase {
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "date_created", updatable = false, columnDefinition = "timestamp with time zone")
-    private OffsetDateTime dateCreated;
+    @Column(name = "created_at", updatable = false, columnDefinition = "timestamp with time zone")
+    private OffsetDateTime createdAt;
 
     @CreatedBy
     @JdbcTypeCode(SqlTypes.JSON)
@@ -35,8 +37,8 @@ public class AuditBase {
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "date_modified", insertable  = false, columnDefinition = "timestamp with time zone")
-    private OffsetDateTime dateModified;
+    @Column(name = "updated_at", insertable  = false, columnDefinition = "timestamp with time zone")
+    private OffsetDateTime updatedAt;
 
     @LastModifiedBy
     @JdbcTypeCode(SqlTypes.JSON)
@@ -45,7 +47,7 @@ public class AuditBase {
 
     @PreUpdate
     public void preUpdate() {
-        this.dateModified = OffsetDateTime.now(ZoneId.of("Africa/Lagos"));
+        this.updatedAt = OffsetDateTime.now(ZoneId.of("Africa/Lagos"));
     }
 
     public String getCreatedByUserId() {

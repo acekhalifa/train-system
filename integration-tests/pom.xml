@@ -42,14 +42,8 @@
             <version>${io.jsonwebtoken.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.esl.academy.2025.api</groupId>
-            <artifactId>app-config</artifactId>
-            <version>1.0.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.esl.academy.2025.api</groupId>
-            <artifactId>app-config</artifactId>
+            <groupId>com.esl.academy.api</groupId>
+            <artifactId>notification-management</artifactId>
             <version>1.0.0</version>
             <scope>test</scope>
         </dependency>

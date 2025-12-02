@@ -33,7 +33,7 @@ public abstract class BaseIntegrationTest {
     static void postgresProperties(@NotNull DynamicPropertyRegistry registry) {
         registry.add("spring.flyway.enabled", () -> "true");
         registry.add("spring.flyway.placeholderReplacement", () -> "false");
-        registry.add("spring.flyway.locations", () -> "filesystem:../service-gateway/**/db/migration/default,filesystem:../integration-tests/**/db/migration/test");
+        registry.add("spring.flyway.locations", () -> "filesystem:../service-gateway/**/db/migration/default,filesystem:../integration-tests/**/resources/db/migration/test");
         registry.add("spring.main.allow-circular-references", () -> true);
         registry.add("spring.threads.virtual.enabled", () -> true);
 
