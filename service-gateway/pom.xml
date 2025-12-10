@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.esl.academy.2025.api</groupId>
         <artifactId>root</artifactId>
@@ -18,8 +17,49 @@
            <artifactId>core</artifactId>
            <version>${project.version}</version>
        </dependency>
-   </dependencies>
 
+       <dependency>
+           <groupId>${project.groupId}</groupId>
+           <artifactId>security</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+
+       <dependency>
+           <groupId>${project.groupId}</groupId>
+           <artifactId>app-config</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+
+       <dependency>
+           <groupId>${project.groupId}</groupId>
+           <artifactId>options</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+
+       <dependency>
+           <groupId>${project.groupId}</groupId>
+           <artifactId>notification-management</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+
+       <dependency>
+           <groupId>${project.groupId}</groupId>
+           <artifactId>track-management</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+
+       <dependency>
+           <groupId>${project.groupId}</groupId>
+           <artifactId>user-management</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+
+       <dependency>
+           <groupId>${project.groupId}</groupId>
+           <artifactId>document-management</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+   </dependencies>
 
     <build>
         <plugins>

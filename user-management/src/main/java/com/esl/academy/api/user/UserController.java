@@ -1,68 +1,129 @@
 package com.esl.academy.api.user;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import jakarta.validation.Valid;
+import java.time.OffsetDateTime;
 import java.util.UUID;
-import static com.esl.academy.api.user.UserDto.*;
 
-@Tag(name = "User Management")
+import static com.esl.academy.api.user.UserDto.UpdateUserTypeDto;
+import static com.esl.academy.api.user.UserDto.UpdateUserStatusDto;
+
+@Tag(name = "User")
 @RestController
 @RequestMapping("api/v1/users")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "Authorization")
 public class UserController {
+
     private final UserService userService;
 
-    @Operation(summary = "Create intern invitation")
-    @PostMapping("interns/invitations")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void createInternInvitation(@Valid @RequestBody CreateUserInvitationRequest request) {
-         userService.addUserInvitation(request);
-    }
-
-    @Operation(summary = "Get setup information by JWT token")
-    @GetMapping("/setup/{token}")
-    public SetupInfoDto getSetupInfo(@PathVariable String token) {
-        return userService.getSetupInfo(token);
-    }
-
-    @Operation(summary = "Complete user setup with JWT token validation")
-    @PostMapping("/setup/{token}/complete")
-    public UserDto completeSetup(
-        @PathVariable String token,
-        @Valid @RequestBody CompleteSetupRequest request
+    @Operation(summary = "Update any user, including super_admin, supervisor, and intern")
+    @PreAuthorize("hasRole('SUPER_ADMIN') or #userId == authentication.principal.id")
+    @PatchMapping("{userId}")
+    public UserDto updateUser(
+        @PathVariable UUID userId,
+        @Valid @RequestBody UserDto.UpdateUserDto dto
     ) {
-        return userService.completeSetup(token, request);
+        return userService.updateUser(userId, dto);
     }
 
-    @Operation(summary = "Get all users")
+    @Operation(summary = "Change the role of any user in the system")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PatchMapping("{userId}/role")
+    public UserDto changeUserRole(
+        @PathVariable UUID userId,
+        @RequestBody @Valid UpdateUserTypeDto dto
+    ) {
+        return userService.changeUserRole(userId, dto);
+    }
+
+    @Operation(summary = "Change the status of any user in the system")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PatchMapping("{userId}/status")
+    public UserDto changeUserStatus(
+        @PathVariable UUID userId,
+        @RequestBody @Valid UpdateUserStatusDto dto
+    ) {
+        return userService.changeUserStatus(userId, dto);
+    }
+
+    @Operation(summary = "Fetch all supervisors.")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @GetMapping("supervisors")
+    public Page<UserDto> getAllSupervisors(Pageable pageable) {
+        return userService.getAllSupervisors(pageable);
+    }
+
+    @Operation(summary = "Fetch all super_admins.")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @GetMapping("superadmins")
+    public Page<UserDto> getAllSuperAdmins(Pageable pageable) {
+        return userService.getAllSuperAdmins(pageable);
+    }
+
+    @Operation(summary = "Fetch all users")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @GetMapping
-    public List<UserDto> getAllUsers(
-        @RequestParam(required = false) UserType userType,
-        @RequestParam(required = false) UserStatus status
-    ) {
-        if (userType != null) {
-            return userService.getUsersByType(userType);
-        }
-        if (status != null) {
-            return userService.getUsersByStatus(status);
-        }
-        return userService.getAllUsers();
+    public Page<UserDto> getAllUsers(Pageable pageable) {
+        return userService.getAllUsers(pageable);
     }
 
-    @Operation(summary = "Get user by ID")
-    @GetMapping("/{userId}")
+    @Operation(summary = "Fetch any user by the userId")
+    @PreAuthorize("hasRole('SUPER_ADMIN') or #userId == authentication.principal.id")
+    @GetMapping("{userId}")
     public UserDto getUserById(@PathVariable UUID userId) {
-        return userService.getById(userId);
+        return userService.getUserById(userId);
     }
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @DeleteMapping("{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable UUID userId) {
+        userService.deleteUser(userId);
+    }
 
+    @Operation()
+    @GetMapping("supervisors/search")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public Page<UserDto> searchSupervisors(
+        @RequestParam(required = false) UUID assignedTrackId,
+        @RequestParam(required = false) UserStatus status,
+        @RequestParam(required = false) OffsetDateTime createdAt,
+        @RequestParam(required = false) String name,
+        Pageable pageable
+    ) {
+        return userService.searchSupervisors(
+            assignedTrackId,
+            status,
+            createdAt,
+            name,
+            pageable
+        );
+    }
 
+    @Operation()
+    @GetMapping("superadmins/search")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public Page<UserDto> searchSuperAdmins(
+        @RequestParam(required = false) UserStatus status,
+        @RequestParam(required = false) OffsetDateTime createdAt,
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String email,
+        Pageable pageable
+    ) {
+        return userService.searchSuperAdmins(
+            status,
+            createdAt,
+            name,
+            email,
+            pageable
+        );
+
+    }
 }

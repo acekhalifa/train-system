@@ -1,6 +1,7 @@
 package com.esl.academy.api.user;
 
 import com.esl.academy.api.core.audit.AuditBase;
+import com.esl.academy.api.intern.Intern;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,29 +9,33 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.proxy.HibernateProxy;
+
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-@SuperBuilder
 @Entity
-@Table(name = "user")
-@Data
+@Table(name = "\"user\"")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true)
+@SuperBuilder
 public class User extends AuditBase {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
+    @Column(name = "user_id", nullable = false)
     private UUID userId;
 
     @Column(name = "first_name", nullable = false, length = 50)
@@ -46,11 +51,11 @@ public class User extends AuditBase {
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_type", nullable = false)
+    @Column(name = "user_type", nullable = false, columnDefinition = "user_type")
     private UserType userType;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false, columnDefinition = "user_status")
     private UserStatus status;
 
     @Column(name = "profile_picture_link")
@@ -60,9 +65,16 @@ public class User extends AuditBase {
     private OffsetDateTime lastLogin;
 
     @Column(name = "login_attempts")
-    private int loginAttempts;
+    @Builder.Default
+    private Integer loginAttempts = 0;
 
-    public User(UUID userId){
+    @OneToOne(mappedBy = "user")
+    private Intern intern;
+
+    @Version
+    private Long version;
+
+    public User(UUID userId) {
         this.userId = userId;
     }
 
@@ -84,5 +96,21 @@ public class User extends AuditBase {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+            "userId=" + userId +
+            ", firstName='" + firstName + '\'' +
+            ", lastName='" + lastName + '\'' +
+            ", email='" + email + '\'' +
+            ", passwordHash='" + passwordHash + '\'' +
+            ", userType=" + userType +
+            ", status=" + status +
+            ", profilePictureLink='" + profilePictureLink + '\'' +
+            ", lastLogin=" + lastLogin +
+            ", loginAttempts=" + loginAttempts +
+            '}';
     }
 }

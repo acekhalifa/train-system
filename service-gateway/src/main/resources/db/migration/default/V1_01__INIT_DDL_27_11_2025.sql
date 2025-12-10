@@ -35,6 +35,7 @@ CREATE TABLE public."option" (
     option_type_id                          UUID NOT NULL,
     parent_option_id                        UUID,
     description                             TEXT,
+    is_deleted                              BOOLEAN DEFAULT FALSE,
     name                                    VARCHAR(50),
     created_at                              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at                              TIMESTAMPTZ,
@@ -71,46 +72,6 @@ CREATE TABLE public.track (
     CONSTRAINT unique_track_name UNIQUE (name)
 );
 
--- USER
-CREATE TABLE public."user" (
-    user_id                                 UUID NOT NULL,
-    first_name                              VARCHAR(50) NOT NULL,
-    last_name                               VARCHAR(50) NOT NULL,
-    email                                   VARCHAR(50) NOT NULL,
-    password_hash                           VARCHAR(255),
-    user_type                               user_type NOT NULL,
-    status                                  user_status NOT NULL,
-    profile_picture_link                    TEXT,
-    last_login                              TIMESTAMPTZ,
-    login_attempts                          INT DEFAULT 0,
-    created_at                              TIMESTAMPTZ DEFAULT NOW(),
-    updated_at                              TIMESTAMPTZ,
-    created_by                              JSON NOT NULL,
-    modified_by                             JSON,
-
-
-
-    CONSTRAINT pk_user_id PRIMARY KEY (user_id),
-    CONSTRAINT chk_login_attempts CHECK (login_attempts >= 0),
-    CONSTRAINT unique_user_email UNIQUE (email)
-);
-
--- USERTYPE: intern
-CREATE TABLE public.intern (
-    user_id                                 UUID NOT NULL,
-    track_id                                UUID NOT NULL,
-
-
-
-    CONSTRAINT pk_intern_user_id PRIMARY KEY (user_id),
-    CONSTRAINT fk_intern_user FOREIGN KEY (user_id)
-        REFERENCES public."user"(user_id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_intern_track FOREIGN KEY (track_id)
-        REFERENCES public.track(track_id)
-        ON DELETE RESTRICT,
-    CONSTRAINT unique_intern_track UNIQUE (user_id, track_id)
-);
 
 
 -- DOCUMENT
@@ -133,6 +94,56 @@ CREATE TABLE public.document (
 
     CONSTRAINT pk_document_id PRIMARY KEY (document_id)
 );
+
+-- USER
+CREATE TABLE public."user" (
+    user_id                                 UUID NOT NULL,
+    first_name                              VARCHAR(50) NOT NULL,
+    last_name                               VARCHAR(50) NOT NULL,
+    email                                   VARCHAR(50) NOT NULL,
+    password_hash                           VARCHAR(255),
+    user_type                               VARCHAR(15) NOT NULL,
+    status                                  VARCHAR(15) NOT NULL,
+    profile_picture_link                    TEXT,
+    last_login                              TIMESTAMPTZ,
+    login_attempts                          INT DEFAULT 0,
+    version                                 BIGINT NOT NULL DEFAULT 0,
+    created_at                              TIMESTAMPTZ DEFAULT NOW(),
+    updated_at                              TIMESTAMPTZ,
+    created_by                              JSON NOT NULL,
+    modified_by                             JSON,
+
+
+
+    CONSTRAINT pk_user_id PRIMARY KEY (user_id),
+    CONSTRAINT chk_login_attempts CHECK (login_attempts >= 0),
+    CONSTRAINT unique_user_email UNIQUE (email)
+);
+
+-- USERTYPE: intern
+CREATE TABLE public.intern (
+    user_id                                 UUID NOT NULL,
+    track_id                                UUID NOT NULL,
+    intern_status                           VARCHAR(15) NOT NULL,
+    version                                 BIGINT NOT NULL DEFAULT 0,
+    document_id                             UUID,
+
+
+
+    CONSTRAINT pk_intern_user_id PRIMARY KEY (user_id),
+    CONSTRAINT fk_intern_user FOREIGN KEY (user_id)
+        REFERENCES public."user"(user_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_intern_document_id FOREIGN KEY (document_id)
+            REFERENCES public.document(document_id)
+            ON DELETE CASCADE,
+    CONSTRAINT fk_intern_track FOREIGN KEY (track_id)
+        REFERENCES public.track(track_id)
+        ON DELETE RESTRICT,
+    CONSTRAINT unique_intern_track UNIQUE (user_id, track_id)
+);
+
+
 
 -- LINK
 CREATE TABLE public.link (
@@ -271,7 +282,9 @@ CREATE TABLE public.app_config (
     created_at                              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at                              TIMESTAMPTZ,
     created_by                              JSON NOT NULL,
-    modified_by                             JSON
+    modified_by                             JSON,
+
+    CONSTRAINT pk_app_config_id PRIMARY KEY (app_config_id)
 );
 
 CREATE TABLE public.notification (

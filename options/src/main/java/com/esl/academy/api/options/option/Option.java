@@ -1,7 +1,7 @@
 package com.esl.academy.api.options.option;
 
 import com.esl.academy.api.core.audit.AuditBase;
-import com.esl.academy.api.options.optiontype.OptionType;
+import com.esl.academy.api.options.option_type.OptionType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,11 +13,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import lombok.experimental.SuperBuilder;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -26,8 +26,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class Option extends AuditBase{
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "option_id")
@@ -39,8 +39,37 @@ public class Option extends AuditBase{
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "is_deleted")
+    private boolean deleted;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_type_id", nullable = false)
     @JsonIgnore
     private OptionType optionType;
+
+    public Option(UUID id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Option option = (Option) o;
+        return Objects.equals(id, option.id) && Objects.equals(name, option.name) && Objects.equals(description, option.description) && Objects.equals(optionType, option.optionType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, optionType);
+    }
+
+    @Override
+    public String toString() {
+        return "Option{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", optionType=" + optionType +
+            '}';
+    }
 }

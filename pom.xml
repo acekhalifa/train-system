@@ -17,11 +17,17 @@
     <name>TCMP API</name>
     <description>TCMP - Training and Certificate Management Portal API</description>
     <modules>
-        <module>user-management</module>
         <module>service-gateway</module>
         <module>core</module>
         <module>integration-tests</module>
+        <module>app-config</module>
+        <module>options</module>
         <module>notification-management</module>
+        <module>security</module>
+        <module>document-management</module>
+        <module>track-management</module>
+        <module>user-management</module>
+        <module>learning-resource</module>
     </modules>
 
     <properties>
@@ -278,6 +284,29 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate6</artifactId>
             <version>2.20.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>spring-dotenv</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${io.jsonwebtoken.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${io.jsonwebtoken.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${io.jsonwebtoken.version}</version>
         </dependency>
     </dependencies>
 

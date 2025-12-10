@@ -59,8 +59,8 @@ public abstract class BaseIntegrationTest {
     protected void setAuthenticatedUser(String usernameOrEmail) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(usernameOrEmail);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails,
-                userDetails.getPassword(),
-                userDetails.getAuthorities());
+            userDetails.getPassword(),
+            userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

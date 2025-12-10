@@ -9,14 +9,14 @@
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.esl.academy.api</groupId>
     <artifactId>notification-management</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>com.esl.academy.2025.api</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.0</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

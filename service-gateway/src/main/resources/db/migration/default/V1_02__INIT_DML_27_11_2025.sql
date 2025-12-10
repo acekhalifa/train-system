@@ -15,7 +15,7 @@ VALUES
 INSERT INTO public.app_config
 (app_config_id, app_config_value, is_available_to_public, is_check, possible_values, description, created_by)
 VALUES
-('MAX_LOGIN_ATTEMPTS', '10485760', FALSE, FALSE, NULL, 'Maximum login attempts', '{"system": "init"}'),
+('MAX_LOGIN_ATTEMPTS', '5', FALSE, FALSE, NULL, 'Maximum password login attempts', '{"system": "init"}'),
 ('FILE_BYTE_UPLOAD_LIMIT', '10485760', FALSE, FALSE, NULL, 'Max file upload size in bytes (10 MB)', '{"system": "init"}');
 
 -- ===============================================
