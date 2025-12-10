@@ -1,18 +1,22 @@
 package com.esl.academy.api.user;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Repository
-public interface
-UserRepository extends JpaRepository<User, UUID> {
-    boolean existsByEmail(String email);
-    Optional<User> findByEmail(String email);
-    List<User> findByUserType(UserType userType);
-    List<User> findByStatus(UserStatus status);
+public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificationExecutor<User> {
+
+    Optional<User> findByEmail (String email);
+
+    Optional<User> findByUserId(UUID userId);
+
+    Page<User> findByStatus(UserStatus status, Pageable pageable);
+
+    Optional<User> findByUserIdAndStatus(UUID userId, UserStatus status);
+
+    Page<User> findByUserType(UserType userType, Pageable pageable);
 }
