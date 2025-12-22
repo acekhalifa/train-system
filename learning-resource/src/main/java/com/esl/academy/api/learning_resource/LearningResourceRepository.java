@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface LearningResourceRepository extends JpaRepository<LearningResource, UUID>, JpaSpecificationExecutor<LearningResource> {
 
-    Page<LearningResource> findByTrackIdAndIsDeletedFalse(UUID trackId, Pageable pageable);
+    Page<LearningResource> findByTrackTrackIdAndIsDeletedFalse(UUID trackId, Pageable pageable);
 
     Optional<LearningResource> findByLearningResourceIdAndIsDeletedFalse(UUID learningResourceId);
 }

@@ -1,66 +1,68 @@
-INSERT INTO public.app_config
-(app_config_id, app_config_value, is_available_to_public, is_check, possible_values, description, created_by)
-VALUES
-('MAX_LOGIN_ATTEMPTS', '5', FALSE, FALSE, NULL, 'Maximum password login attempts', '{"system": "init"}'),
-('FILE_BYTE_UPLOAD_LIMIT', '10485760', FALSE, FALSE, NULL, 'Max file upload size in bytes (10 MB)', '{"system": "init"}')
-ON CONFLICT (app_config_id) DO UPDATE SET
-    app_config_value = EXCLUDED.app_config_value,
-    updated_at = EXCLUDED.updated_at;
-
-INSERT INTO public.option_type (option_type_id, name, created_by)
-VALUES (gen_random_uuid(), 'weeek', '{"system":"seed"}');
-
-INSERT INTO public.option (option_id, option_type_id, name, description, created_by)
-SELECT
-    gen_random_uuid(),
-    (SELECT option_type_id FROM public.option_type WHERE name = 'weeek' LIMIT 1),
-    w,
-    'Weeek ' || w,
-    '{"system":"seed"}'
-FROM (VALUES ('1'), ('2'), ('3'), ('4'), ('5')) AS t(w);
+--INSERT INTO public.app_config
+--(app_config_id, app_config_value, is_available_to_public, is_check, possible_values, description, created_by)
+--VALUES
+--('MAX_LOGIN_ATTEMPTS', '10485760', FALSE, FALSE, NULL, 'Max file upload size in bytes (10 MB)', '{"system": "init"}'),
+--('FILE_BYTE_UPLOAD_LIMIT', '5', FALSE, FALSE, NULL, 'Maximum password login attempts', '{"system": "init"}'));
+--
+--INSERT INTO public.option_type (option_type_id, name, created_by)
+--VALUES (uuid_generate_v4(), 'week', '{"system":"seed"}');
+--
+--INSERT INTO public.option (option_id, option_type_id, name, description, created_by)
+--SELECT
+--    uuid_generate_v4(),
+--    (SELECT option_type_id FROM public.option_type WHERE name = 'week' LIMIT 1),
+--    w,
+--    'Week '||w,
+--    '{"system":"seed"}'
+--FROM (VALUES ('1'), ('2'), ('3'), ('4'), ('5')) AS t(w);
 
 
-INSERT INTO public.app_config (
-    app_config_id,
-    app_config_value,
-    is_available_to_public,
-    is_check,
-    created_at,
-    created_by,
-    updated_at
-) VALUES (
-    'INVITATION_EXPIRY_DAYS',
-    '2',
-    FALSE,
+INSERT INTO public.app_config (app_config_id, app_config_value)
+VALUES ('INVITATION_EXPIRY_DAYS', '2')
+ON CONFLICT (app_config_id)
+DO UPDATE SET
+    app_config_value = EXCLUDED.app_config_value;
+
+
+INSERT INTO public.document (
+    document_id,
+    name,
+    file_type,
+    document_path,
+    byte_size,
+    attachment,
+    extension,
+    extension_group,
+    created_by
+)
+VALUES (
+    '9c2c6d90-1d27-4b3b-9f1f-5cdb6f1c9999',
+    'Backend Track Certificate',
+    'PDF',
+    '/certificates/backend-track.pdf',
+    204800,
     TRUE,
-    CURRENT_TIMESTAMP,
-    '{"system": "SYSTEM_TEST"}',
-    CURRENT_TIMESTAMP
-) ON CONFLICT (app_config_id) DO UPDATE SET
-    app_config_value = EXCLUDED.app_config_value,
-    updated_at = EXCLUDED.updated_at;
+    'pdf',
+    'application',
+    '{"system":"flyway-test"}'
+);
 
 INSERT INTO public.track (
     track_id,
     name,
     description,
-    start_date,
-    end_date,
     duration,
     is_deleted,
     learning_focus,
-    created_at,
     created_by
-) VALUES (
+)
+VALUES (
     'c0eebc94-9c0b-4ef8-bb6d-6bb9bd380a12',
     'Backend',
-    'Master Apis and Database',
-    '2025-01-01',
-    '2026-03-01',
-    '3',
+    'Master APIs and Databases',
+    3,
     FALSE,
-    'Apis, databases, Java',
-    CURRENT_TIMESTAMP,
+    'APIs, databases, Java',
     '{"system": "test_user"}'
 );
 
@@ -181,4 +183,34 @@ INSERT INTO public.learning_resource (
     FALSE,
     CURRENT_TIMESTAMP,
     '{"system": "test_user"}'
+);
+
+INSERT INTO public.assessment (
+    assessment_id,
+    learning_resource_id,
+    description,
+    deadline,
+    is_deleted,
+    published_status,
+    created_at,
+    created_by
+) VALUES (
+    'b4f46104-dab7-420d-9e22-f9285d192974',
+    'b4c46104-dac7-430d-9e22-e8285d192974',
+    'An assessment description',
+    '2025-12-12T23:59:00+01:00',
+    FALSE,
+    'PUBLISHED',
+    CURRENT_TIMESTAMP,
+    '{"system": "test_user"}'
+),
+(
+    '1d9f2632-6fcd-4b8a-818d-8b98af87bfb1',
+    '1c1711c5-b7ff-4133-b79e-dfd6a49708cd',
+    'Test assessment',
+    NOW() + INTERVAL '7 day',
+    FALSE,
+    'DRAFT',
+    CURRENT_TIMESTAMP,
+    '{"userId": "11111111-1111-1111-1111-111111111111", "email": "test@user.com"}'
 );

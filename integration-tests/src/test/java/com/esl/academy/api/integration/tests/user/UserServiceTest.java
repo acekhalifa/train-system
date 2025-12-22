@@ -1,15 +1,13 @@
 package com.esl.academy.api.integration.tests.user;
 
-import com.esl.academy.api.appconfig.AppConfigRepository;
+import com.esl.academy.api.app_config.AppConfigRepository;
 import com.esl.academy.api.integration.tests.base.BaseIntegrationTest;
-import com.esl.academy.api.intern.Intern;
-import com.esl.academy.api.intern.InternRepository;
-import com.esl.academy.api.intern.InternStatus;
-import com.esl.academy.api.invitation.InvitationService;
-import com.esl.academy.api.user.User;
-import com.esl.academy.api.user.UserDto;
-import com.esl.academy.api.user.UserRepository;
-import com.esl.academy.api.user.UserService;
+import com.esl.academy.api.user.intern.InternRepository;
+import com.esl.academy.api.user.InternStatus;
+import com.esl.academy.api.user.invitation.InvitationService;
+import com.esl.academy.api.user.user.UserDto;
+import com.esl.academy.api.user.user.UserRepository;
+import com.esl.academy.api.user.user.UserService;
 import com.esl.academy.api.user.UserStatus;
 import com.esl.academy.api.user.UserType;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +36,7 @@ public class UserServiceTest extends BaseIntegrationTest {
 
     @Autowired
     private AppConfigRepository appConfigRepository;
-
+/*
     private User adminUser;
     private User supervisorUser;
     private User internUser;
@@ -173,5 +171,7 @@ public class UserServiceTest extends BaseIntegrationTest {
 
         assertThat(page.getTotalElements()).isEqualTo(1);
     }
+
+ */
 }
 

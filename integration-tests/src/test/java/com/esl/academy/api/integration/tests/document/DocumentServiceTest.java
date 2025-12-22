@@ -2,28 +2,18 @@ package com.esl.academy.api.integration.tests.document;
 
 import com.esl.academy.api.*;
 import com.esl.academy.api.DocumentDto.AddUpdateDocumentDto;
-import com.esl.academy.api.core.exceptions.NotFoundException;
 import com.esl.academy.api.integration.tests.base.BaseIntegrationTest;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import java.io.IOException;
-import java.util.UUID;
-
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 public class DocumentServiceTest extends BaseIntegrationTest {
 
     @Autowired
     private DocumentService documentService;
-
 
     @Autowired
     private DocumentRepository documentRepository;
@@ -48,8 +38,9 @@ public class DocumentServiceTest extends BaseIntegrationTest {
 
         AddUpdateDocumentDto dto = new AddUpdateDocumentDto(
             "Test File",
-            FileType.DOC,
-            true);
+            FileType.DOCUMENT,
+            true
+        );
 
         MockMultipartFile file = mockFile("hello.pdf", "PDF content here");
 
@@ -80,7 +71,7 @@ public class DocumentServiceTest extends BaseIntegrationTest {
         // step 1: create initial DOC
         AddUpdateDocumentDto dto = new AddUpdateDocumentDto(
             "Initial Name",
-            FileType.DOC,
+            FileType.DOCUMENT,
             true
         );
 
@@ -92,7 +83,7 @@ public class DocumentServiceTest extends BaseIntegrationTest {
         // step 2: update it
         AddUpdateDocumentDto updateDto = new AddUpdateDocumentDto(
             "Updated Name",
-            FileType.JPG,
+            FileType.DOCUMENT,
             false
         );
 
@@ -103,7 +94,7 @@ public class DocumentServiceTest extends BaseIntegrationTest {
 
         assertThat(updated).isNotNull();
         assertThat(updated.name()).isEqualTo("Updated Name");
-        assertThat(updated.fileType()).isEqualTo(FileType.JPG);
+        assertThat(updated.fileType()).isEqualTo(FileType.DOCUMENT);
         assertThat(updated.attachment()).isFalse();
         assertThat(updated.extension()).isEqualTo("png");
 
@@ -124,7 +115,7 @@ public class DocumentServiceTest extends BaseIntegrationTest {
 
         AddUpdateDocumentDto dto = new AddUpdateDocumentDto(
             "DOC Sample",
-            FileType.DOC,
+            FileType.DOCUMENT,
             true
         );
 
@@ -138,34 +129,4 @@ public class DocumentServiceTest extends BaseIntegrationTest {
         assertThat(found).isPresent();
         assertThat(found.get().name()).isEqualTo("DOC Sample");
     }
-
-    @Test
-    @DisplayName("Should return document as Resource when file exists")
-    void getDocumentAsResource_withValidFile_shouldReturnResource() throws IOException {
-
-        AddUpdateDocumentDto dto = new AddUpdateDocumentDto(
-            "DOC Sample",
-            FileType.DOC,
-            true
-        );
-
-        MockMultipartFile file = mockFile("doc.pdf", "file-content");
-        var saved = documentService.addDocument(dto, file);
-        forceFlush();
-
-        Resource resource = documentService.getDocumentAsResource(saved.documentId());
-        assertNotNull(resource);
-        assertTrue(resource.exists());
-        assertTrue(resource.isReadable());
-    }
-
-    // TEST: Document Not Found
-    @Test
-    void getDocumentAsResource_whenDocumentNotFound_shouldThrowException() {
-        UUID nonExistentId = UUID.randomUUID();
-        assertThatThrownBy(() -> documentService.getDocumentAsResource(nonExistentId))
-            .isInstanceOf(NotFoundException.class)
-            .hasMessageContaining("Document not found with ID");
-    }
-
 }

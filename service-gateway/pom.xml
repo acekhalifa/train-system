@@ -59,6 +59,23 @@
            <artifactId>document-management</artifactId>
            <version>${project.version}</version>
        </dependency>
+
+       <dependency>
+           <groupId>${project.groupId}</groupId>
+           <artifactId>assessment-management</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+
+       <dependency>
+           <groupId>${project.groupId}</groupId>
+           <artifactId>submission-management</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+       <dependency>
+           <groupId>${project.groupId}</groupId>
+           <artifactId>dashboard-management</artifactId>
+           <version>${project.version}</version>
+       </dependency>
    </dependencies>
 
     <build>

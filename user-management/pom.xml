@@ -24,18 +24,19 @@
             <artifactId>app-config</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>com.esl.academy.2025.api</groupId>
-            <artifactId>document-management</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>academy-domain</artifactId>
+            <version>${project.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>com.esl.academy.2025.api</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>track-management</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
         </dependency>
+
     </dependencies>
 
 </project>

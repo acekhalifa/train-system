@@ -1,18 +1,15 @@
 package com.esl.academy.api.integration.tests.appconfig;
 
-import com.esl.academy.api.appconfig.AppConfig;
-import com.esl.academy.api.appconfig.AppConfigDTO;
-import com.esl.academy.api.appconfig.AppConfigRepository;
-import com.esl.academy.api.appconfig.AppConfigService;
+import com.esl.academy.api.app_config.AppConfigDto;
+import com.esl.academy.api.app_config.AppConfigRepository;
+import com.esl.academy.api.app_config.AppConfigService;
 import com.esl.academy.api.core.constants.AppConfigId;
 import com.esl.academy.api.integration.tests.base.BaseIntegrationTest;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,7 +24,7 @@ public class AppConfigServiceTest extends BaseIntegrationTest {
 
     @Test
     void getAllConfigs_withExistingConfigs_shouldReturnAllConfigs() {
-        List<AppConfigDTO> result = appConfigService.getAllConfigs();
+        List<AppConfigDto> result = appConfigService.getAllConfigs();
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -40,12 +37,12 @@ public class AppConfigServiceTest extends BaseIntegrationTest {
     @Test
     void getAppConfigById_withValidConfigId_shouldReturnConfig() {
         String configValue = "5";
-        AppConfig result = appConfigService.getAppConfigById(AppConfigId.MAX_LOGIN_ATTEMPTS);
+        var result = appConfigService.getAppConfigById(AppConfigId.MAX_LOGIN_ATTEMPTS)
+            .orElseThrow();
 
         assertNotNull(result);
-        assertEquals(AppConfigId.MAX_LOGIN_ATTEMPTS.name(), result.getId());
-        assertEquals(configValue, result.getValue());
-        Assertions.assertFalse(result.isCheck());
+        assertEquals(AppConfigId.MAX_LOGIN_ATTEMPTS.name(), result.appConfigId());
+        assertEquals(configValue, result.value());
     }
 
 }

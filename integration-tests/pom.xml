@@ -23,12 +23,7 @@
             <artifactId>hamcrest-optional</artifactId>
             <version>2.0.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.esl.academy.2025.api</groupId>
-            <artifactId>learning-resource</artifactId>
-            <version>1.0.0</version>
-            <scope>test</scope>
-        </dependency>
+
     </dependencies>
 
 </project>

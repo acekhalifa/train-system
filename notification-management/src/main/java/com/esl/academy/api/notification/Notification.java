@@ -18,10 +18,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @SuperBuilder
 public class Notification extends HalfAuditBase implements Serializable {
+
     @Id
-    @Column(nullable = false)
-    @Builder.Default
-    private UUID notificationId = UUID.randomUUID();
+    @Column(name = "notification_id", nullable = false)
+    private UUID notificationId;
 
     @Column(nullable = false)
     private UUID userId;

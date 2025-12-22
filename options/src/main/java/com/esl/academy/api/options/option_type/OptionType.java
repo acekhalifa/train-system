@@ -19,7 +19,7 @@ public class OptionType extends AuditBase {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "option_type_id")
-    private UUID id;
+    private UUID optionTypeId;
 
     @Column(nullable = false, length = 50, unique = true)
     private String name;
@@ -28,18 +28,18 @@ public class OptionType extends AuditBase {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         OptionType that = (OptionType) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+        return Objects.equals(optionTypeId, that.optionTypeId) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(optionTypeId, name);
     }
 
     @Override
     public String toString() {
         return "OptionType{" +
-            "id=" + id +
+            "optionTypeId=" + optionTypeId +
             ", name='" + name + '\'' +
             '}';
     }

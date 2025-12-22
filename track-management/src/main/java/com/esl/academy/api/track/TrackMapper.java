@@ -8,5 +8,5 @@ public interface TrackMapper {
 
     TrackMapper INSTANCE = Mappers.getMapper(TrackMapper.class);
 
-    TrackDto toDto(Track track);
+    TrackDto map(Track track);
 }

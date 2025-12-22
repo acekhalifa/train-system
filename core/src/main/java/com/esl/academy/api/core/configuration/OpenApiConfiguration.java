@@ -35,8 +35,7 @@ public class OpenApiConfiguration {
         Server server = new Server().url(apiUrl).description("Computed server url");
 
         return new OpenAPI()
-                .info(info)
-                .servers(List.of(server));
+                .info(info);
     }
 
 }

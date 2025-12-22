@@ -1,8 +1,6 @@
 package com.esl.academy.api.security.configuration;
 
-import com.esl.academy.api.core.exceptions.NotFoundException;
-import com.esl.academy.api.user.User;
-import com.esl.academy.api.user.UserRepository;
+import com.esl.academy.api.user.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,12 +11,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username)
-            .orElseThrow(() -> new NotFoundException("User not found"));
+        final var user = userService.getUserByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new CustomUserDetails(user);
     }
+
 }

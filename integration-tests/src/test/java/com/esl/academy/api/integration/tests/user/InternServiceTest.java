@@ -2,12 +2,11 @@ package com.esl.academy.api.integration.tests.user;
 
 import com.esl.academy.api.core.exceptions.NotFoundException;
 import com.esl.academy.api.integration.tests.base.BaseIntegrationTest;
-import com.esl.academy.api.intern.InternDto;
-import com.esl.academy.api.intern.InternDto.UpdateInternTrackDto;
-import com.esl.academy.api.intern.InternDto.UpdateInternStatusDto;
-import com.esl.academy.api.intern.InternService;
-import com.esl.academy.api.intern.InternRepository;
-import com.esl.academy.api.intern.InternStatus;
+import com.esl.academy.api.user.intern.InternDto;
+import com.esl.academy.api.user.intern.InternDto.UpdateInternStatusDto;
+import com.esl.academy.api.user.intern.InternService;
+import com.esl.academy.api.user.intern.InternRepository;
+import com.esl.academy.api.user.InternStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +32,6 @@ public class InternServiceTest extends BaseIntegrationTest {
     void setup() {
         existingInternId = UUID.fromString("b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13");
         backendTrackId = UUID.fromString("c0eebc94-9c0b-4ef8-bb6d-6bb9bd380a12");
-    }
-
-    @Test
-    void testUpdateInternTrack() {
-        InternDto dto = internService.updateInternTrack(existingInternId, new UpdateInternTrackDto(backendTrackId));
-        assertThat(dto.trackId()).isEqualTo(backendTrackId);
     }
 
     @Test
@@ -76,7 +69,7 @@ public class InternServiceTest extends BaseIntegrationTest {
     void testGetInternsByTrack() {
         Page<InternDto> interns = internService.getInternsByTrack(backendTrackId, PageRequest.of(0, 10));
         assertThat(interns.getContent()).isNotEmpty();
-        assertThat(interns.getContent().getFirst().trackId()).isEqualTo(backendTrackId);
+        assertThat(interns.getContent().getFirst().track().trackId()).isEqualTo(backendTrackId);
     }
 
     @Test

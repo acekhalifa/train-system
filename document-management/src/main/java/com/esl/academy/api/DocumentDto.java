@@ -30,5 +30,11 @@ public record DocumentDto(
 
         @NotNull(message = "file attachment is required")
         Boolean attachment
-        ) {}
+    ) {}
+
+    public record DocumentResponseDto(UUID documentId,
+                                      String name,
+                                      Long byteSize,
+                                      String downloadUrl) {}
+
 }

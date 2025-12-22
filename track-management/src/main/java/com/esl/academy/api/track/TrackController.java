@@ -5,6 +5,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +33,7 @@ import static com.esl.academy.api.track.TrackDto.UpdateTrackDto;
 public class TrackController {
     private final TrackService trackService;
 
-    @Operation(summary = "Add a track")
+    @Operation(summary = "Add a track and create learning resources automatically  ")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TrackDto addTrack(@RequestBody @Valid AddTrackDto dto) {
@@ -37,28 +41,28 @@ public class TrackController {
     }
 
     @Operation(summary = "Update a track")
-    @PatchMapping("/{trackId}")
-    public TrackDto updateTrack(
-        @PathVariable UUID trackId,
-        @Valid @RequestBody UpdateTrackDto dto
-    ) {
+    @PatchMapping("{trackId}")
+    public TrackDto updateTrack(@PathVariable UUID trackId,
+                                @Valid @RequestBody UpdateTrackDto dto) {
         return trackService.updateTrack(trackId, dto);
     }
 
-    @Operation(summary = "Fetch a track by id")
-    @GetMapping("/{trackId}")
+    @Operation(summary = "Get a track by id")
+    @GetMapping("{trackId}")
     public TrackDto getTrackById(@PathVariable UUID trackId) {
         return trackService.getTrackById(trackId);
     }
 
-    @Operation(summary = "Fetch all tracks")
+    @Operation(summary = "Get all tracks")
     @GetMapping
-    public List<TrackDto> getAllTracks() {
-        return trackService.getAllTracks();
+    public Page<TrackDto> getAllTracks(
+        @ParameterObject @PageableDefault(page = 0, size = 10, sort = "name") Pageable pageable) {
+        return trackService.getAllTracks(pageable);
     }
 
     @Operation(summary = "Delete a track")
-    @DeleteMapping("/{trackId}")
+    @DeleteMapping("{trackId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void softDeleteTrack(UUID trackId) {
         trackService.softDeleteTrack(trackId);
     }

@@ -10,7 +10,7 @@ public interface OptionMapper {
 
     OptionMapper INSTANCE = Mappers.getMapper(OptionMapper.class);
 
-    @Mapping(source = "optionType.id", target = "optionTypeId")
+    @Mapping(source = "optionType.optionTypeId", target = "optionTypeId")
     OptionDto toOptionDto(Option option);
 
     List<OptionDto> toOptionDtoList(List<Option> options);

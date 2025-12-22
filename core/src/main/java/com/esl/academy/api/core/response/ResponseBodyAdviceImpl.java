@@ -49,7 +49,7 @@ import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
-@ControllerAdvice("com.esl.academy.2025.api")
+@ControllerAdvice("com.esl.academy.api")
 public class ResponseBodyAdviceImpl implements ResponseBodyAdvice<Object> {
 
     @Override

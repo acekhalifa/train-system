@@ -4,6 +4,7 @@ import com.esl.academy.api.options.option.OptionDto;
 import com.esl.academy.api.options.option.OptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,8 @@ import java.util.UUID;
 @Tag(name = "Option Types")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/option-types")
+@RequestMapping("api/v1/option-types")
+@SecurityRequirement(name = "Authorization")
 public class OptionTypeController {
     private final OptionService optionService;
     private final OptionTypeService optionTypeService;
@@ -28,17 +30,17 @@ public class OptionTypeController {
     }
 
     @Operation(summary = "Get Option Type by ID")
-    @GetMapping("/{id}")
+    @GetMapping("{optionTypeId}")
     public OptionTypeDto getOptionTypeById(
         @Parameter(description = "ID of the Option Type")
-        @PathVariable UUID id) {
-        return optionTypeService.getOptionTypeById(id);
+        @PathVariable UUID optionTypeId) {
+        return optionTypeService.getOptionTypeById(optionTypeId);
     }
 
     @Operation(summary = "Get Options by Type ID")
-    @GetMapping("/{id}/options")
+    @GetMapping("{optionTypeId}/options")
     public List<OptionDto> getOptionsByTypeId(
-        @PathVariable UUID id) {
-        return optionService.getOptionsByType(id);
+        @PathVariable UUID optionTypeId) {
+        return optionService.getOptionsByType(optionTypeId);
     }
 }

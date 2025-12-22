@@ -1,8 +1,8 @@
 package com.esl.academy.api.track;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,7 +10,8 @@ public interface TrackRepository extends JpaRepository<Track, UUID> {
 
     Optional<Track> findByTrackIdAndIsDeletedFalse(UUID trackId);
 
-    List<Track> findByIsDeletedFalse();
+    Page<Track> findByIsDeletedFalse(Pageable pageable);
 
-    List<Track> findByNameContainingIgnoreCaseAndIsDeletedFalse(String name);
+    Optional<Track> findByNameAndIsDeletedFalse(String name);
+
 }

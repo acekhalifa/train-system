@@ -26,10 +26,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @SuperBuilder
 public class Document extends AuditBase implements Serializable {
+
     @Id
-    @Column(nullable = false)
-    @Builder.Default
-    private UUID documentId = UUID.randomUUID();
+    @Column(name = "document_id", nullable = false)
+    private UUID documentId;
 
     @Column(nullable = false)
     private String name;
@@ -79,7 +79,7 @@ public class Document extends AuditBase implements Serializable {
     @Override
     public String toString() {
         return "Document{" +
-            "certificateId=" + documentId +
+            "documentId=" + documentId +
             ", name='" + name + '\'' +
             ", fileType=" + fileType +
             ", documentPath='" + documentPath + '\'' +

@@ -1,16 +1,12 @@
 package com.esl.academy.api;
 
-import com.esl.academy.api.core.exceptions.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,34 +63,6 @@ public class DocumentController {
     @GetMapping("/{id}")
     public Optional<DocumentDto> getById(@PathVariable UUID id) {
         return service.getById(id);
-    }
-
-    @Operation(summary = "Download a document by ID")
-    @GetMapping("{id}/download")
-    public ResponseEntity<Resource> downloadDocumentById(@PathVariable UUID id) {
-        var resource = service.getDocumentAsResource(id);
-        var certificateDto = service.getById(id).orElseThrow(() ->
-            new NotFoundException("Document not found with ID: " + id));
-        return ResponseEntity.ok()
-            .header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + certificateDto.name()+ "\"")
-            .contentType(MediaType.APPLICATION_PDF)
-            .contentLength(certificateDto.byteSize())
-            .body(resource);
-    }
-
-    @Operation(summary = "Preview a document by id")
-    @GetMapping("{id}/preview")
-    public ResponseEntity<Resource> previewDocumentById(@PathVariable UUID id) {
-        var resource = service.getDocumentAsResource(id);
-        var certificateDto = service.getById(id).orElseThrow(() ->
-            new NotFoundException("Document not found with ID: " + id));
-        return ResponseEntity.ok()
-            .header(HttpHeaders.CONTENT_DISPOSITION,
-                "inline; filename=\"" + certificateDto.name() + "\"")
-            .contentType(MediaType.APPLICATION_PDF)
-            .contentLength(certificateDto.byteSize())
-            .body(resource);
     }
 
     @Operation(summary = "Fetch all documents")

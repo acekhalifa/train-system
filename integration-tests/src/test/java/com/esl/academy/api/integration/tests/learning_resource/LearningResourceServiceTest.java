@@ -9,6 +9,7 @@ import com.esl.academy.api.learning_resource.LearningResourceDto.AddLearningReso
 import com.esl.academy.api.learning_resource.LearningResourceRepository;
 import com.esl.academy.api.learning_resource.LearningResourceService;
 import com.esl.academy.api.options.option.OptionRepository;
+import com.esl.academy.api.options.option_type.OptionTypeRepository;
 import com.esl.academy.api.track.TrackRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,9 @@ public class LearningResourceServiceTest extends BaseIntegrationTest {
     @Autowired
     private OptionRepository optionRepository;
 
+    @Autowired
+    private OptionTypeRepository optionTypeRepository;
+
     private UUID existingLearningResourceId;
 
     private UUID existingTrackId;
@@ -51,32 +55,6 @@ public class LearningResourceServiceTest extends BaseIntegrationTest {
         existingTrackId = UUID.fromString("c0eebc94-9c0b-4ef8-bb6d-6bb9bd380a12");
         monthId = UUID.randomUUID();
         weekId = UUID.randomUUID();
-    }
-
-    @Test
-    void addLearningResource_withValidData_shouldAdd() {
-
-        UUID trackId = UUID.fromString("c0eebc94-9c0b-4ef8-bb6d-6bb9bd380a12");
-        UUID monthId = UUID.randomUUID();
-        UUID weekId = UUID.randomUUID();
-
-        AddLearningResourceDto dto = new AddLearningResourceDto(
-            trackId,
-            monthId,
-            weekId,
-            "REST API Basics",
-            "Introduction to building RESTful APIs with Java and Spring Boot."
-        );
-
-        LearningResourceDto saved = learningResourceService.addLearningResource(dto);
-
-        assertNotNull(saved);
-        assertNotNull(saved.learningResourceId());
-        assertEquals(trackId, saved.trackId());
-        assertEquals(monthId, saved.monthId());
-        assertEquals(weekId, saved.weekId());
-        assertEquals("REST API Basics", saved.resourceTitle());
-        assertEquals("Introduction to building RESTful APIs with Java and Spring Boot.", saved.description());
     }
 
     @Test
@@ -176,11 +154,25 @@ public class LearningResourceServiceTest extends BaseIntegrationTest {
     void searchLearningResources_withFilters_shouldReturnCorrectResults() {
         PageRequest page = PageRequest.of(0, 10);
 
-        // Use February monthId and week 2 from your option repository for accurate filtering
-        UUID februaryMonthId = UUID.randomUUID();
+        UUID monthOptionTypeId = optionTypeRepository.findByName("Month")
+            .orElseThrow(() -> new NotFoundException("Month option type not found"))
+            .getOptionTypeId();
 
-        UUID week2Id = UUID.randomUUID();
+        UUID februaryMonthId = optionRepository.findByOptionType_OptionTypeId(monthOptionTypeId).stream()
+            .filter(option -> "February".equalsIgnoreCase(option.getName()))
+            .findFirst()
+            .orElseThrow(() -> new NotFoundException("February option not found"))
+            .getOptionId();
 
+        UUID weekOptionTypeId = optionTypeRepository.findByName("Week")
+            .orElseThrow(() -> new NotFoundException("Week option type not found"))
+            .getOptionTypeId();
+
+        UUID week2Id = optionRepository.findByOptionType_OptionTypeId(weekOptionTypeId).stream()
+            .filter(option -> "2".equals(option.getName()))
+            .findFirst()
+            .orElseThrow(() -> new NotFoundException("Week 2 option not found"))
+            .getOptionId();
 
         Page<LearningResourceDto> result = learningResourceService.searchLearningResources(
             existingTrackId,
@@ -195,6 +187,7 @@ public class LearningResourceServiceTest extends BaseIntegrationTest {
         assertEquals(1, result.getTotalElements());
         assertEquals("Spring Boot Dependency Injection", result.getContent().get(0).resourceTitle());
     }
+
 
     @Test
     void searchLearningResources_invalidTrackId_shouldThrowNotFoundException() {

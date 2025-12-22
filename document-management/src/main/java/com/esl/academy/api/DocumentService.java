@@ -1,17 +1,12 @@
 package com.esl.academy.api;
 
-import com.esl.academy.api.core.exceptions.InternalServerException;
 import com.esl.academy.api.core.exceptions.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +27,13 @@ public class DocumentService {
         return fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
     }
 
-    private String determineExtensionGroup(String fileName) {
+    private  FileType resolveFileType(String fileName) {
         String ext = getExtension(fileName);
         return switch (ext) {
-            case "pdf", "doc", "docx", "txt" -> "document";
-            case "jpg", "jpeg", "png", "gif" -> "image";
-            case "mp4", "mov", "avi" -> "video";
-            default -> "other";
+            case "pdf", "doc", "docx", "txt" -> FileType.DOCUMENT;
+            case "jpg", "jpeg", "png", "gif" -> FileType.IMAGE;
+            case "mp4", "mov", "avi" -> FileType.VIDEO;
+            default -> FileType.OTHER;
         };
     }
 
@@ -52,7 +47,7 @@ public class DocumentService {
             .byteSize(file.getSize())
             .attachment(dto.attachment())
             .extension(getExtension(file.getOriginalFilename()))
-            .extensionGroup(determineExtensionGroup(file.getOriginalFilename()))
+            .extensionGroup(resolveFileType(file.getOriginalFilename()).toString())
             .isDeleted(false)
             .createdAt(OffsetDateTime.now())
             .createdBy("{}")
@@ -74,7 +69,7 @@ public class DocumentService {
             document.setDocumentPath(newPath);
             document.setByteSize(file.getSize());
             document.setExtension(getExtension(file.getOriginalFilename()));
-            document.setExtensionGroup(determineExtensionGroup(file.getOriginalFilename()));
+            document.setExtensionGroup(resolveFileType(file.getOriginalFilename()).toString());
         }
 
         return DocumentMapper.INSTANCE.toDto(repository.save(document));
@@ -84,22 +79,6 @@ public class DocumentService {
         Optional<Document> document = repository.findByDocumentIdAndIsDeletedFalse(id);
         return document.map(DocumentMapper.INSTANCE::toDto);
     }
-
-    public Resource getDocumentAsResource(UUID id) {
-        var document = repository.findByDocumentIdAndIsDeletedFalse(id).orElseThrow(
-            () -> new NotFoundException("Document not found with ID: " + id));
-        try {
-            Path filePath = Paths.get(document.getDocumentPath()).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-            if (!resource.exists() || !resource.isReadable()) {
-                throw new NotFoundException("File not found or not readable: " + document.getDocumentPath());
-            }
-            return resource;
-        } catch (IOException e) {
-            throw new InternalServerException("Error loading file: " + e.getMessage(), e);
-        }
-    }
-
 
     public List<DocumentDto> getAllDocuments() {
         return repository.findAllByIsDeletedFalse()
@@ -139,5 +118,36 @@ public class DocumentService {
             .stream()
             .map(DocumentMapper.INSTANCE::toDto)
             .toList();
+    }
+
+    @Transactional
+    public List<DocumentDto> addDocuments(List<MultipartFile> files) throws IOException {
+
+        if (files == null || files.isEmpty()) {
+            throw new IllegalArgumentException("At least one document is required");
+        }
+
+        List<DocumentDto> savedDocuments = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            if (file == null || file.isEmpty()) {
+                throw new IllegalArgumentException("One of the submitted files is empty");
+            }
+
+            var addDocumentDto = new DocumentDto.AddUpdateDocumentDto(
+                file.getOriginalFilename(),
+                resolveFileType(file.getOriginalFilename()),
+                true
+            );
+
+            DocumentDto saved = addDocument(addDocumentDto, file);
+            savedDocuments.add(saved);
+        }
+
+        return savedDocuments;
+    }
+
+    public List<Document> findAllById(List<UUID> documentIds) {
+        return repository.findAllById(documentIds);
     }
 }

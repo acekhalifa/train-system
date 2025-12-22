@@ -1,5 +1,7 @@
 package com.esl.academy.api.notification;
 
+import static com.esl.academy.api.submission.SubmissionDto.SubmissionResponseDto;
+import com.esl.academy.api.track.TrackService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +16,9 @@ import static com.esl.academy.api.notification.NotificationDto.AddNotificationDt
 @Transactional
 @RequiredArgsConstructor
 public class NotificationService {
-    public final NotificationRepository repository;
+    private final NotificationRepository repository;
+    private final TrackService trackService;
+
 
     public NotificationDto addNotification(AddNotificationDto dto) {
         Notification notification = Notification.builder()
